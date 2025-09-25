@@ -1,7 +1,23 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
+import { UsersRepository } from './repositories/users.repository';
+import { CommunitiesRepository } from './repositories/communities.respository';
+import { MembersRepository } from './repositories/members.repository';
+import { FollowsRepository } from './repositories/follows.repository';
 
 @Module({
-  providers: [PrismaService],
+  providers: [
+    PrismaService,
+    UsersRepository,
+    CommunitiesRepository,
+    MembersRepository,
+    FollowsRepository,
+  ],
+  exports: [
+    UsersRepository,
+    CommunitiesRepository,
+    MembersRepository,
+    FollowsRepository,
+  ],
 })
 export class PostgresModule {}
