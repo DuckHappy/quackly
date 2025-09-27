@@ -1,7 +1,16 @@
-export interface IRepository<T, ID = number> {
-  create(entity: T): Promise<T>;
-  findById(id: ID): Promise<T | null>;
-  findAll(): Promise<T[]>;
-  update(id: ID, entity: Partial<T>): Promise<T | null>;
-  delete(id: ID): Promise<boolean>;
+export interface IRepository<TEntity extends { id: any }> {
+  create(
+    data: Omit<TEntity, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<TEntity>;
+
+  findById(id: TEntity['id']): Promise<TEntity | null>;
+
+  findAll(): Promise<TEntity[]>;
+
+  update(
+    id: TEntity['id'],
+    data: Partial<Omit<TEntity, 'id' | 'createdAt' | 'updatedAt'>>,
+  ): Promise<TEntity | null>;
+
+  delete(id: TEntity['id']): Promise<TEntity | null>;
 }

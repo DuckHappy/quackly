@@ -41,7 +41,7 @@ model Community {
 
   // Relaciones
   ownerId   Int
-  owner     User     @relation("CommunityOwner", fields: [ownerId], references: [id])
+  owner     User     @relation("CommunityOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members   Member[]
   followers Follow[]
 }
