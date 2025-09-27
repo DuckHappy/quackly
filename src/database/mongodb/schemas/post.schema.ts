@@ -17,8 +17,8 @@ export class Post {
   @Prop({ required: true })
   communityId: number;
 
-  @Prop({ type: [Number], default: [] })
-  likes: number[];
+  @Prop({ type: Number, default: 0 })
+  likes: number;
 
   @Prop({
     type: [{ userId: Number, content: String, createdAt: Date }],
