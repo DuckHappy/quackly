@@ -1,0 +1,86 @@
+// ------------------------------------------------------
+// Prisma schema para PostgreSQL
+// Source of truth: Postgres
+// ------------------------------------------------------
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------------------------------------
+// MODELOS
+// ------------------------------------------------------
+
+// 👤 Usuarios
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  communities Community[] @relation("CommunityOwner")
+  memberships Member[]
+  follows     Follow[]
+}
+
+// 🌐 Comunidades
+model Community {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  ownerId   Int
+  owner     User     @relation("CommunityOwner", fields: [ownerId], references: [id])
+  members   Member[]
+  followers Follow[]
+}
+
+// 👥 Miembros (Users ↔ Communities con roles)
+model Member {
+  id       Int      @id @default(autoincrement())
+  role     Role     @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  // Relaciones
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  communityId Int
+  community   Community @relation(fields: [communityId], references: [id])
+
+  @@unique([userId, communityId]) // Evita duplicados
+}
+
+// 👀 Seguimientos (Users ↔ Communities)
+model Follow {
+  id         Int      @id @default(autoincrement())
+  followedAt DateTime @default(now())
+
+  // Relaciones
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  communityId Int
+  community   Community @relation(fields: [communityId], references: [id])
+
+  @@unique([userId, communityId]) // Evita duplicados
+}
+
+// ------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------
+
+enum Role {
+  OWNER
+  MODERATOR
+  MEMBER
+}
