@@ -7,7 +7,7 @@ export class CreateCommunityDto {
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description: string; //to fix data in service i change description?: string | null;
 
   @IsNumber()
   @IsNotEmpty()

@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { CommunitiesService, Community } from './communities.service';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
-import { get } from 'mongoose';
 
 @Controller('communities')
 export class CommunitiesController {
@@ -14,22 +13,17 @@ export class CommunitiesController {
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<Community> {
     return this.communitiesService.findAll();
   }
 
-  @Get()
-  findId(){
-    return this.communitiesService.findById();
-  }
-
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) id: number) : Promise<Community[]> {
+  findById(@Param('id', ParseIntPipe) id: number) : Promise<Community> {
     return this.communitiesService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommunityDto: UpdateCommunityDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateCommunityDto: UpdateCommunityDto) {
     return this.communitiesService.update(+id, updateCommunityDto);
   }
 
