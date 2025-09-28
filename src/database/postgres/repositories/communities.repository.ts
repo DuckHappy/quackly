@@ -4,10 +4,12 @@ import { Community } from '@prisma/client';
 import { IRepository } from '../../interfaces/repository.interface';
 
 @Injectable()
-export class CommunitiesRepository implements IRepository<Community, number> {
+export class CommunitiesRepository implements IRepository<Community> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(entity: Community): Promise<Community> {
+  async create(
+    entity: Omit<Community, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<Community> {
     return this.prisma.community.create({ data: entity });
   }
 
@@ -21,7 +23,7 @@ export class CommunitiesRepository implements IRepository<Community, number> {
 
   async update(
     id: number,
-    entity: Partial<Community>,
+    entity: Partial<Omit<Community, 'id' | 'createdAt' | 'updatedAt'>>,
   ): Promise<Community | null> {
     return this.prisma.community.update({
       where: { id },
@@ -29,9 +31,8 @@ export class CommunitiesRepository implements IRepository<Community, number> {
     });
   }
 
-  async delete(id: number): Promise<boolean> {
-    const deleted = await this.prisma.community.delete({ where: { id } });
-    return !!deleted;
+  async delete(id: number): Promise<Community> {
+    return await this.prisma.community.delete({ where: { id } });
   }
 
   async findByOwner(ownerId: number): Promise<Community[]> {

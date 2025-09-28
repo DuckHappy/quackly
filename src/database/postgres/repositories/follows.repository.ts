@@ -4,25 +4,15 @@ import { Follow } from '@prisma/client';
 import { IRepository } from '../../interfaces/repository.interface';
 
 @Injectable()
-export class FollowsRepository
-  implements IRepository<Follow, { userId: number; communityId: number }>
-{
+export class FollowsRepository implements IRepository<Follow> {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Implementación genérica de IRepository
-  async create(entity: Follow): Promise<Follow> {
+  async create(entity: Omit<Follow, 'id' | 'followedAt'>): Promise<Follow> {
     return this.prisma.follow.create({ data: entity });
   }
 
-  async findById(id: {
-    userId: number;
-    communityId: number;
-  }): Promise<Follow | null> {
-    return this.prisma.follow.findUnique({
-      where: {
-        userId_communityId: { userId: id.userId, communityId: id.communityId },
-      },
-    });
+  async findById(id: number): Promise<Follow | null> {
+    return this.prisma.follow.findUnique({ where: { id } });
   }
 
   async findAll(): Promise<Follow[]> {
@@ -30,41 +20,39 @@ export class FollowsRepository
   }
 
   async update(
-    id: { userId: number; communityId: number },
-    entity: Partial<Follow>,
+    id: number,
+    entity: Partial<Omit<Follow, 'id' | 'followedAt'>>,
+  ): Promise<Follow> {
+    return this.prisma.follow.update({ where: { id }, data: entity });
+  }
+
+  async delete(id: number): Promise<Follow> {
+    return this.prisma.follow.delete({ where: { id } });
+  }
+
+  async findByUserAndCommunity(
+    userId: number,
+    communityId: number,
   ): Promise<Follow | null> {
-    return this.prisma.follow.update({
-      where: {
-        userId_communityId: { userId: id.userId, communityId: id.communityId },
-      },
-      data: entity,
+    return this.prisma.follow.findUnique({
+      where: { userId_communityId: { userId, communityId } },
     });
   }
 
-  async delete(id: { userId: number; communityId: number }): Promise<boolean> {
-    const deleted = await this.prisma.follow.delete({
-      where: {
-        userId_communityId: { userId: id.userId, communityId: id.communityId },
-      },
-    });
-    return !!deleted;
+  async findByUser(userId: number): Promise<Follow[]> {
+    return this.prisma.follow.findMany({ where: { userId } });
   }
 
-  // Métodos específicos
+  async findByCommunity(communityId: number): Promise<Follow[]> {
+    return this.prisma.follow.findMany({ where: { communityId } });
+  }
+
   async followCommunity(userId: number, communityId: number): Promise<Follow> {
-    return this.prisma.follow.create({
-      data: { userId, communityId },
-    });
+    return this.prisma.follow.create({ data: { userId, communityId } });
   }
 
   async isFollowing(userId: number, communityId: number): Promise<boolean> {
-    const follow = await this.prisma.follow.findUnique({
-      where: { userId_communityId: { userId, communityId } },
-    });
+    const follow = await this.findByUserAndCommunity(userId, communityId);
     return !!follow;
-  }
-
-  async getFollowsByUser(userId: number): Promise<Follow[]> {
-    return this.prisma.follow.findMany({ where: { userId } });
   }
 }
