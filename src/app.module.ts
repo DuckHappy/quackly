@@ -6,6 +6,7 @@ import { CommunitiesModule } from './communities/communities.module';
 import { MemberModule } from './member/member.module';
 import { FollowsModule } from './follows/follows.module';
 import { PostsModule } from './posts/posts.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { PostsModule } from './posts/posts.module';
     CommunitiesModule,
     PostsModule,
     FollowsModule,
+    UsersModule,
     MemberModule,
   ],
   controllers: [AppController],
