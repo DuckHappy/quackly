@@ -15,6 +15,7 @@ import { FollowsRepository } from './repositories/follows.repository';
     FollowsRepository,
   ],
   exports: [
+    PrismaService,
     UsersRepository,
     CommunitiesRepository,
     MembersRepository,
