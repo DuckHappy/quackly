@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, BadRequestException } from "@nestjs/common";
+import { Controller, Get, Post, Body, BadRequestException, Param, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UserService } from "./user.service";
 
@@ -31,6 +31,16 @@ export class UsersController {
       throw new BadRequestException('Invalid email or password');
     }
     return { access_token: token };
+  }
+
+  @Get(':id') //uso metodo para crear endpoint id
+  async getUserById(@Param('id') id: string) { // obtiene parametro en esta caso id y lo guarda en variable id
+    const user = await this.userService.findById(+id); // encontrar usuario por id usando userService
+    if (!user) { // si el usuario no existe
+      throw new NotFoundException('User not found'); // muestra mensaje 'User not found'
+    }
+    const { password, ...userWithoutPassword } = user; // extrae la contraseña del usuario
+    return userWithoutPassword; // devuelve el usuario encontrado sin la contraseña
   }
 
 }
