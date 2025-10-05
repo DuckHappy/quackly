@@ -39,4 +39,8 @@ export class UserService {
         return token;
     }
 
+    async findById(id:number){ //encontrar por id
+        return this.userRepository.findById(id); //devuelve el id encontrado de userRepository
+    }
+
 }
