@@ -3,6 +3,7 @@ import { UsersRepository } from "src/database/postgres/repositories/users.reposi
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -41,6 +42,10 @@ export class UserService {
 
     async findById(id:number){ //encontrar por id
         return this.userRepository.findById(id); //devuelve el id encontrado de userRepository
+    }
+
+    async update(id: number, updateUserDto: UpdateUserDto) {
+        return this.userRepository.update(id, updateUserDto);
     }
 
 }
