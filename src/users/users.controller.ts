@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, BadRequestException, Param, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UserService } from "./user.service";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Controller('users')
 export class UsersController {
@@ -41,6 +42,16 @@ export class UsersController {
     }
     const { password, ...userWithoutPassword } = user; // extrae la contraseña del usuario
     return userWithoutPassword; // devuelve el usuario encontrado sin la contraseña
+  }
+
+  @Post(':id/edit')
+  async editUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.userService.findById(+id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const updatedUser = await this.userService.update(+id, updateUserDto);
+    return { message: 'User updated successfully', user: updatedUser };
   }
 
 }
