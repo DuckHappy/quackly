@@ -8,7 +8,7 @@ export class UsersRepository implements IRepository<User> {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(
-    entity: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
+    entity: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'avatar_url' | 'bio'>,
   ): Promise<User> {
     return this.prisma.user.create({ data: entity });
   }
