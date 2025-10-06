@@ -5,7 +5,6 @@ import { CommunitiesRepository } from './repositories/communities.repository';
 import { MembersRepository } from './repositories/members.repository';
 import { FollowsRepository } from './repositories/follows.repository';
 
-@Global()
 @Module({
   providers: [
     PrismaService,
