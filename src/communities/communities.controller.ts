@@ -58,7 +58,7 @@ export class CommunitiesController {
     return this.communitiesService.JoinCommunity(communityId, JoinCommunityDto.userId)
   }
 
-  //ENDPOINT for list members (memebrs details)
+  //ENDPOINT for list members (members details)
   @Get(':id/members')
   getCommunityMembers(
     @Param('id', ParseIntPipe) communityId: number,
