@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post as PostEntity  } from './entities/post.entity'; //problem post detected like a value, so i change as PostEntity
+import { Post as PostEntity } from './entities/post.entity'; //problem post detected like a value, so i change as PostEntity
 
 @Controller('posts')
 export class PostsController {
@@ -19,7 +19,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) : Promise<PostEntity> {
+  async findById(@Param('id') id: string): Promise<PostEntity | null> {
     return this.postsService.findById(id);
   }
 
@@ -34,8 +34,9 @@ export class PostsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.postsService.delete(id);
+  async delete(@Param('id') id: string): Promise<{ success: boolean }> {
+    const result = await this.postsService.delete(id);
+    return { success: result };
   }
 
   //new methods for likes and comments
