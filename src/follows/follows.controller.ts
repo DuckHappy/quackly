@@ -19,7 +19,7 @@ export class FollowsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.followsService.findOne(+id);
+    return this.followsService.findById(+id);
   }
 
   @Patch(':id')
@@ -29,6 +29,6 @@ export class FollowsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.followsService.remove(+id);
+    return this.followsService.delete(+id);
   }
 }
