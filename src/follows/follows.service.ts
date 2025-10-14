@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFollowDto } from './dto/create-follow.dto';
 import { UpdateFollowDto } from './dto/update-follow.dto';
+import { Follow } from '@prisma/client';
+import { FollowsRepository } from 'src/database/postgres/repositories/follows.repository';
 
 @Injectable()
 export class FollowsService {
-  create(createFollowDto: CreateFollowDto) {
-    return 'This action adds a new follow';
+  constructor(private followsRepository: FollowsRepository) {}
+
+  async create(createFollowDto: CreateFollowDto) {
+    return this.followsRepository.create(createFollowDto);
   }
 
-  findAll() {
-    return `This action returns all follows`;
+  async findAll(): Promise<Follow[]> {
+    return this.followsRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} follow`;
+  async findById(id: number) {
+    return this.followsRepository.findById(id);
   }
 
-  update(id: number, updateFollowDto: UpdateFollowDto) {
-    return `This action updates a #${id} follow`;
+  async update(id: number, updateFollowDto: UpdateFollowDto) {
+    return this.followsRepository.update(id, updateFollowDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} follow`;
+  async delete(id: number) {
+    return this.followsRepository.delete(id);
   }
 }
