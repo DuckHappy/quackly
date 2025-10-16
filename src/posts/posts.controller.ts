@@ -53,8 +53,8 @@ export class PostsController {
 
   //endpoints
 
-  // @Get('/feed/:userId')
-  // async getFeed(@Param('userId')userId: string) {
-  //   return this.postsService.getFeed(userId);
-  // }
+  @Get('/feed/:userId')
+  async getFeed(@Param('userId')userId: string) {
+    return this.postsService.getFeed(userId);
+  }
 }

@@ -48,4 +48,8 @@ export class PostsService {
   async addComment(postId: string, userId: number, content: string): Promise<Post | null> {
     return this.postRepository.addComment(postId, {userId, content});
   }
+
+  async getFeed(_userId: string){  ///"_" mean that we dont use
+    return this.findAll();
+  }
 }
