@@ -1,11 +1,7 @@
 import { IsNumber, IsNotEmpty } from "class-validator";
 
-export class CreateFollowDto {
+export class JoinCommunityDto {
     @IsNumber()
     @IsNotEmpty()
     userId: number;
-    
-    @IsNumber()
-    @IsNotEmpty()
-    communityId: number;
 }

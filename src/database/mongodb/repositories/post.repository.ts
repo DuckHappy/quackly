@@ -3,10 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Post, PostDocument } from '../schemas/post.schema';
-import { IRepository } from '../../interfaces/repository.interface';
 
 @Injectable()
-export class PostsRepository implements IRepository<Post, string> {
+export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
   ) {}
