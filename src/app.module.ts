@@ -7,6 +7,8 @@ import { MemberModule } from './member/member.module';
 import { FollowsModule } from './follows/follows.module';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
+import { OpenaiModule } from './openai/openai.module';
+import { CommunityProfileModule } from './community-profile/community-profile.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { UsersModule } from './users/users.module';
     FollowsModule,
     UsersModule,
     MemberModule,
+    OpenaiModule,
+    CommunityProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
