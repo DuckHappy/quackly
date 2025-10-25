@@ -1,9 +1,10 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { UsersRepository } from './repositories/users.repository';
 import { CommunitiesRepository } from './repositories/communities.repository';
 import { MembersRepository } from './repositories/members.repository';
 import { FollowsRepository } from './repositories/follows.repository';
+import { AppLogger } from 'src/utils/app.logger';
 
 @Module({
   providers: [
@@ -12,6 +13,11 @@ import { FollowsRepository } from './repositories/follows.repository';
     CommunitiesRepository,
     MembersRepository,
     FollowsRepository,
+    AppLogger,
+    {
+      provide: 'LoggerService',
+      useExisting: AppLogger, // cualquier inyección de LoggerService recibe AppLogger
+    },
   ],
   exports: [
     PrismaService,
@@ -19,6 +25,7 @@ import { FollowsRepository } from './repositories/follows.repository';
     CommunitiesRepository,
     MembersRepository,
     FollowsRepository,
+    AppLogger,
   ],
 })
 export class PostgresModule {}
