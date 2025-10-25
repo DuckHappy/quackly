@@ -14,7 +14,7 @@ async function bootstrap() {
   
   
   await app.listen(port);
-  logger.log(`Application is running on: ${process.env.HOST ?? 'http://localhost'}:${port}`);
+  logger.log(`Application is running on: ${process.env.HOST ?? `http://localhost:${port}`}`);
 }
 
 bootstrap();
