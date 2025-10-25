@@ -7,7 +7,7 @@ import { MemberModule } from './member/member.module';
 import { FollowsModule } from './follows/follows.module';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
-import { OpenaiModule } from './openai/openai.module';
+import { OpenAIModule } from './openai/openai.module';
 import { CommunityProfileModule } from './community-profile/community-profile.module';
 
 @Module({
@@ -18,7 +18,7 @@ import { CommunityProfileModule } from './community-profile/community-profile.mo
     FollowsModule,
     UsersModule,
     MemberModule,
-    OpenaiModule,
+    OpenAIModule,
     CommunityProfileModule,
   ],
   controllers: [AppController],
