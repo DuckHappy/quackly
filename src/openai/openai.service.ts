@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import OpenAI from 'openai';
+import extractJson from 'src/utils/extract-json';
 
 @Injectable()
 export class OpenAIService {
@@ -12,6 +13,7 @@ export class OpenAIService {
     }
 
     this.client = new OpenAI({
+      baseURL: 'https://openrouter.ai/api/v1',
       apiKey: process.env.OPENAI_API_KEY,
     });
   }
@@ -33,7 +35,7 @@ ${posts.map((p) => `- ${p.title}: ${p.content}`).join('\n')}
 
     try {
       const completion = await this.client.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'openai/gpt-4o',
         messages: [
           {
             role: 'system',
@@ -47,7 +49,7 @@ ${posts.map((p) => `- ${p.title}: ${p.content}`).join('\n')}
 
       const result = completion.choices[0].message?.content?.trim() || '';
       this.logger.log(`Respuesta OpenAI recibida: ${result.slice(0, 100)}...`);
-      return result;
+      return extractJson(result);
     } catch (error) {
       this.logger.error('Error generando resumen con OpenAI:', error);
       return JSON.stringify({
