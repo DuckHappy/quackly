@@ -9,9 +9,9 @@ Esta configuración permite el uso de **PostgreSQL** y **MongoDB** en un entorno
 
 ## 1. Requisitos
 
-* Docker
-* Docker Compose
-* Archivo `.env` con las variables de entorno definidas
+- Docker
+- Docker Compose
+- Archivo `.env` con las variables de entorno definidas
 
 ---
 
@@ -45,6 +45,9 @@ DATABASE_URL="postgresql://quackly_app:supersecret@localhost:55432/quackly_core?
 
 # URL de conexión para Mongoose / MongoDB
 MONGO_URI="mongodb://quackly_posts_user:supersecret@localhost:57017/quackly_posts?authSource=admin"
+
+# URL de conexión para Mongo Express
+MONGO_URL="mongodb://quackly_posts_user:supersecret@mongo_posts:27017/quackly_posts?authSource=admin"
 ```
 
 > 🔹 Asegúrate de que los puertos no estén en uso en tu sistema.
@@ -54,90 +57,76 @@ MONGO_URI="mongodb://quackly_posts_user:supersecret@localhost:57017/quackly_post
 
 ## 3. Levantar los contenedores
 
-Ejecuta:
-
 ```bash
 docker-compose up -d
 ```
 
-Esto levantará:
+Se levantarán los siguientes contenedores:
 
-* PostgreSQL (`postgres_clients`)
-* PgAdmin (`pgadmin_clients`)
-* MongoDB (`mongo_posts`)
-* Mongo Express (`mongo_express_posts`)
+- PostgreSQL (`postgres_clients`)
+- PgAdmin (`pgadmin_clients`)
+- MongoDB (`mongo_posts`)
+- Mongo Express (`mongo_express_posts`)
 
 ---
 
 ## 4. Conexión a interfaces web
 
-### PostgreSQL / PgAdmin
+### 4.1 PostgreSQL / PgAdmin
 
-* URL: `http://localhost:5550`
-* Usuario: definido en `PGADMIN_EMAIL`
-* Contraseña: definida en `PGADMIN_PASSWORD`
-* Servidor en PgAdmin: `postgres_clients`
+- URL: `http://localhost:5550`
+- Usuario: `PGADMIN_EMAIL`
+- Contraseña: `PGADMIN_PASSWORD`
+- Servidor en PgAdmin: `postgres_clients`
+  - Hostname/address: `postgres_clients`
+  - Port: `POSTGRES_PORT`
+  - Username: `POSTGRES_USER`
+  - Password: `POSTGRES_PASSWORD`
+  - Database: `POSTGRES_DB`
 
-  * Hostname/address: `postgres_clients`
-  * Port: `POSTGRES_PORT`
-  * Username: `POSTGRES_USER`
-  * Password: `POSTGRES_PASSWORD`
-  * Database: `POSTGRES_DB`
+### 4.2 MongoDB / Mongo Express
 
----
-
-### MongoDB / Mongo Express
-
-* URL: `http://localhost:5555`
-* Usuario: `MONGO_INITDB_ROOT_USERNAME`
-* Contraseña: `MONGO_INITDB_ROOT_PASSWORD`
-* Base de datos: `admin` (para autenticar el usuario root)
-* Server: `mongo_posts`
-* Puerto: `MONGO_PORT`
+- URL: `http://localhost:5555`
+- Usuario: `admin`
+- Contraseña: `pass` (para Mongo Express)
+- Base de datos: `admin` (para autenticar el usuario root)
+- Server: `mongo_posts`
+- Puerto: `MONGO_PORT`
 
 > 🔹 Para crear nuevas bases de datos, puedes hacerlo desde Mongo Express o desde tu código usando Mongoose.
 
 ---
 
-## 5. Notas importantes
+## 5. Uso rápido
 
-* Mongo Express requiere que `ME_CONFIG_MONGODB_AUTH_DATABASE` apunte a `admin`.
-* Siempre verifica que los puertos no estén en uso.
-* Los datos de PostgreSQL y MongoDB se guardan en volúmenes Docker (`pgdata` y `mongodata`) para persistencia.
+1. **Prisma / PostgreSQL**: usar `DATABASE_URL` en tu `prisma.schema`.
+2. **Mongoose / MongoDB**: usar `MONGO_URI` en tu proyecto Node.js.
+3. **Mongo Express**: gestionar MongoDB vía web con usuario root y contraseña `adminpass`.
+4. **Detener contenedores**:
 
----
+   ```bash
+   docker-compose down
+   ```
 
-## 6. Detener los contenedores
+5. **Eliminar volúmenes (reset completo)**:
 
-```bash
-docker-compose down
-```
-
-Eliminar volúmenes también:
-
-```bash
-docker-compose down -v
-```
+   ```bash
+   docker-compose down -v
+   ```
 
 ---
 
-## 7. Uso con Prisma y Mongoose
+## 6. Notas importantes
 
-* **PostgreSQL:** usa `DATABASE_URL` en tu `prisma.schema`.
-* **MongoDB:** usa `MONGO_URI` en tu proyecto con Mongoose:
-
-```env
-DATABASE_URL="postgresql://quackly_app:supersecret@localhost:55432/quackly_core"
-MONGO_URI="mongodb://quackly_posts_user:supersecret@localhost:57017/quackly_posts?authSource=admin"
-```
-
-> 🔹 Actualiza estos URLs si cambias las variables de entorno.
+- Mongo Express requiere que `ME_CONFIG_MONGODB_AUTH_DATABASE` apunte a `admin`.
+- Verifica que los puertos no estén en uso antes de levantar los contenedores.
+- Los datos de PostgreSQL y MongoDB se guardan en volúmenes Docker (`pgdata` y `mongodata`) para persistencia.
 
 ---
 
-### Modificar el URL de conexión de cada DB
+## 7. Modificar URLs de conexión
 
-#### PostgreSQL
+### PostgreSQL
 
 Formato:
 
@@ -151,18 +140,9 @@ Ejemplo:
 DATABASE_URL="postgresql://quackly_app:supersecret@localhost:55432/quackly_core"
 ```
 
-Si cambias:
+> 🔹 Actualiza este URL si cambias `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` o `POSTGRES_PORT`.
 
-* `POSTGRES_DB`
-* `POSTGRES_USER`
-* `POSTGRES_PASSWORD`
-* `POSTGRES_PORT`
-
-…debes actualizar también este URL en `prisma.schema` o cualquier proyecto que se conecte a PostgreSQL.
-
----
-
-#### MongoDB
+### MongoDB
 
 Formato:
 
@@ -176,12 +156,17 @@ Ejemplo:
 MONGO_URI="mongodb://quackly_posts_user:supersecret@localhost:57017/quackly_posts?authSource=admin"
 ```
 
-Si cambias:
+> 🔹 Actualiza este URL si cambias `MONGO_INITDB_DATABASE`, `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` o `MONGO_PORT`.
 
-* `MONGO_INITDB_DATABASE`
-* `MONGO_INITDB_ROOT_USERNAME`
-* `MONGO_INITDB_ROOT_PASSWORD`
-* `MONGO_PORT`
+---
 
-…debes actualizar también este URL en tu proyecto Node.js con Mongoose.
+## 8. Resumen visual de uso
+
+- **PostgreSQL** → Prisma → `DATABASE_URL`
+- **PgAdmin** → Interfaz web → gestionar PostgreSQL
+- **MongoDB** → Mongoose → `MONGO_URI`
+- **Mongo Express** → Interfaz web → usuario `admin` / contraseña `pass`
+
+Esta sección sirve como guía rápida para saber qué usar según el contexto.
+
 ---
