@@ -5,8 +5,8 @@ import { CommunityProfileService } from './community-profile.service';
 export class CommunityProfileController {
   constructor(private service: CommunityProfileService) {}
 
-  @Get(':id')
-  async getProfile(@Param('id') id: string) {
-    return this.service.generateCommunityProfile(+id);
+  @Get('slug')
+  async getProfile(@Param('slug') slug: string) {
+    return this.service.generateCommunityProfile(slug);
   }
 }
