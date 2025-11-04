@@ -20,40 +20,40 @@ export class CommunityProfileService {
       stats: { postsCount: 5, commentsCount: 2 },
     };
 
-    const posts = await this.postsRepo.getPostsByCommunity(communityId);
-    if (!posts.length)
-      return {
-        summary: 'No posts',
-        keywords: [],
-        sentiment: 'neutral',
-        stats: { postsCount: 0, commentsCount: 0 },
-      };
+    // const posts = await this.postsRepo.getPostsByCommunity(communityId);
+    // if (!posts.length)
+    //   return {
+    //     summary: 'No posts',
+    //     keywords: [],
+    //     sentiment: 'neutral',
+    //     stats: { postsCount: 0, commentsCount: 0 },
+    //   };
 
-    const rawSummary = await this.openAI.generateSummary(
-      posts.map((p) => ({ title: p.title, content: p.content })),
-    );
-    let parsed: { summary: string; keywords: string[]; sentiment: string } = {
-      summary: rawSummary,
-      keywords: [],
-      sentiment: 'neutral',
-    };
+    // const rawSummary = await this.openAI.generateSummary(
+    //   posts.map((p) => ({ title: p.title, content: p.content })),
+    // );
+    // let parsed: { summary: string; keywords: string[]; sentiment: string } = {
+    //   summary: rawSummary,
+    //   keywords: [],
+    //   sentiment: 'neutral',
+    // };
 
-    try {
-      parsed = JSON.parse(rawSummary);
-    } catch {}
+    // try {
+    //   parsed = JSON.parse(rawSummary);
+    // } catch {}
 
-    const postsCount = posts.length;
-    const commentsCount = posts.reduce(
-      (sum, p) => (p.comments?.length || 0) + sum,
-      0,
-    );
+    // const postsCount = posts.length;
+    // const commentsCount = posts.reduce(
+    //   (sum, p) => (p.comments?.length || 0) + sum,
+    //   0,
+    // );
 
-    await this.summaryRepo.upsertByCommunityId(communityId, {
-      summary: parsed.summary,
-      postsCount,
-      commentsCount,
-    });
+    // await this.summaryRepo.upsertByCommunityId(communityId, {
+    //   summary: parsed.summary,
+    //   postsCount,
+    //   commentsCount,
+    // });
 
-    return { ...parsed, stats: { postsCount, commentsCount } };
+    // return { ...parsed, stats: { postsCount, commentsCount } };
   }
 }
