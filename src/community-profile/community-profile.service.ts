@@ -17,10 +17,10 @@ export class CommunityProfileService {
     console.log('⚙️ Generando perfil de comunidad:', communityId);
 
     return {
-      summary: 'Esto viene del backend 🦆',
-      keywords: ['backend', 'frontend', 'test'],
-      sentiment: 'positivo',
-      stats: { postsCount: 42, commentsCount: 17 },
+      summary: 'La comunidad muestra curiosidad y actividad irregular. Algunos usuarios comentan sobre novedades recientes y versiones pasadas, mientras otros comparten pensamientos personales y cotidianos.',
+      keywords: ['novedades', 'versión', 'cotidianidad', 'curiosidad'],
+      sentiment: 'neutral',
+      stats: { members: 5, commentsCount: 2 },
     };
 
     // const posts = await this.postsRepo.getPostsByCommunity(communityId);
