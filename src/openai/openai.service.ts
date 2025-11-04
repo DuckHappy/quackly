@@ -24,8 +24,8 @@ export class OpenAIService {
     const prompt = `
 Generá un resumen JSON de los siguientes posts de una comunidad con los campos:
 {
-  "summary": "...",
-  "keywords": ["...", "..."],
+  "summary": "resumen de comunidad profesional",
+  "keywords": ["vieron lo ultimo subido? Es una locura", "?????? , que paso con la ultima version?"],
   "sentiment": "positivo | negativo | neutral"
 }
 

@@ -13,50 +13,40 @@ export class CommunityProfileService {
 
   async generateCommunityProfile(communityId: number) {
 
-    // lote de prueba
-    console.log('⚙️ Generando perfil de comunidad:', communityId);
+    const posts = await this.postsRepo.getPostsByCommunity(communityId);
+    if (!posts.length)
+      return {
+        summary: 'No posts',
+        keywords: [],
+        sentiment: 'neutral',
+        stats: { postsCount: 0, commentsCount: 0 },
+      };
 
-    return {
-      summary: 'Esto viene del backend 🦆',
-      keywords: ['backend', 'frontend', 'test'],
-      sentiment: 'positivo',
-      stats: { postsCount: 42, commentsCount: 17 },
+    const rawSummary = await this.openAI.generateSummary(
+      posts.map((p) => ({ title: p.title, content: p.content })),
+    );
+    let parsed: { summary: string; keywords: string[]; sentiment: string } = {
+      summary: rawSummary,
+      keywords: [],
+      sentiment: 'neutral',
     };
 
-    // const posts = await this.postsRepo.getPostsByCommunity(communityId);
-    // if (!posts.length)
-    //   return {
-    //     summary: 'No posts',
-    //     keywords: [],
-    //     sentiment: 'neutral',
-    //     stats: { postsCount: 0, commentsCount: 0 },
-    //   };
+    try {
+      parsed = JSON.parse(rawSummary);
+    } catch {}
 
-    // const rawSummary = await this.openAI.generateSummary(
-    //   posts.map((p) => ({ title: p.title, content: p.content })),
-    // );
-    // let parsed: { summary: string; keywords: string[]; sentiment: string } = {
-    //   summary: rawSummary,
-    //   keywords: [],
-    //   sentiment: 'neutral',
-    // };
+    const postsCount = posts.length;
+    const commentsCount = posts.reduce(
+      (sum, p) => (p.comments?.length || 0) + sum,
+      0,
+    );
 
-    // try {
-    //   parsed = JSON.parse(rawSummary);
-    // } catch {}
+    await this.summaryRepo.upsertByCommunityId(communityId, {
+      summary: parsed.summary,
+      postsCount,
+      commentsCount,
+    });
 
-    // const postsCount = posts.length;
-    // const commentsCount = posts.reduce(
-    //   (sum, p) => (p.comments?.length || 0) + sum,
-    //   0,
-    // );
-
-    // await this.summaryRepo.upsertByCommunityId(communityId, {
-    //   summary: parsed.summary,
-    //   postsCount,
-    //   commentsCount,
-    // });
-
-    // return { ...parsed, stats: { postsCount, commentsCount } };
+    return { ...parsed, stats: { postsCount, commentsCount } };
   }
 }
